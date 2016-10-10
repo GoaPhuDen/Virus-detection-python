@@ -1,0 +1,3 @@
+{'/Users/administrator/Desktop/pic/1.png': '65baabcc2877a0826d04d028897e21d3657d63936f232bb0fa98a0efe82a6682'}
+{'/Users/administrator/Desktop/pic/r57.php': 'fe5ab0a592b695967eb8ac4c79ff1af2c0668895a122aa38b7b30e2cdeae0d17'}
+{'/Users/administrator/Desktop/pic/BkavTool.exe': '3cbb39d8eab6b37f9f20a0988167abd654c6a6930e66f205391f9b3087434199'}
