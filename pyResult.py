@@ -1,5 +1,4 @@
-# sha1 virus: d1e986ea77c4e3ba69bb92d32c777f00
-# sha256 novirus: c793e283146eababa2f035b2fee2369f165a376a4756c6bb23551d22076ee5d4
+#!/usr/local/bin/python3.5
 
 import urllib.request
 import json
@@ -7,12 +6,23 @@ import time
 import smtplib
 from email.mime.text import MIMEText
 import ast
+import random
+import os
+import socket
 
 
-url = "https://www.virustotal.com/vtapi/v2/file/report"
-date = time.time()
+#example virus key
+# sha1 virus: d1e986ea77c4e3ba69bb92d32c777f00
+# sha256 novirus: c793e283146eababa2f035b2fee2369f165a376a4756c6bb23551d22076ee5d4
+
 def result_function():
-    with open('txtSHA256.txt', 'r') as f:
+    url = "https://www.virustotal.com/vtapi/v2/file/report"
+    date = time.time()
+    randomname = random.randint(1000, 99999)
+    dir_ = os.path.dirname(os.path.realpath(__file__))
+    is_sendMail = False
+    serverip = str(socket.gethostbyname(socket.getfqdn()))
+    with open(dir_ + '/txtSHA256.txt', 'r') as f:
         for sha1key in f.read().splitlines():
             dict = ast.literal_eval(sha1key)
             for key_file, key_value in dict.items():
@@ -29,31 +39,38 @@ def result_function():
                 for antivirus in json_convert['scans'].keys():
                     virus = json_convert['scans'][antivirus]['detected']
                     if virus == True:
-                        with open('txtEmail.txt', 'a+') as f1:
-                            f1.write("Virus Detected :  " + key_file + "  " + date + '\n')
+                        is_sendMail = True
+                        with open(dir_ + '/txtEmail.txt', 'a+') as f1:
+                            new_name = key_file + str(randomname)
+                            os.rename(key_file, new_name)
+                            f1.write("Server IP :" + " " + serverip + '\n')
+                            f1.write("Virus Detected :  " + key_file + '\n')
                             f1.write(antivirus + " : " + str(json_convert['scans'][antivirus]['detected']) + '\n')
                             f1.write("More detail : " + "https://www.virustotal.com/vi/file/" + key_value + "/analysis/" + '\n')
-                        with open('txtEmail.txt', 'r') as f2:
-                             fromaddr = 'totalvirusnotify@gmail.com'
-                             toaddrs = 'thaopt@peacesoft.net'
-
-                             msg = MIMEText(f2.read())
-                             msg['Subject'] = 'VIRUS notify'
-                             msg['From'] = 'totalvirusnotify@gmail.com'
-                             msg['To'] = 'thaopt@peacesoft.net'
-
-                             username = 'totalvirusnotify@gmail.com'
-                             password = 'XBCsCKFaRciDww94E'
-
-                             server = smtplib.SMTP('smtp.gmail.com:587')
-                             server.starttls()
-                             server.login(username, password)
-                             server.sendmail(fromaddr, toaddrs, msg.as_string())
-                             server.quit()
-                             break
+                            break
                     else:
                         continue
+                time.sleep(15)
 
-                time.sleep(1)
+        if(is_sendMail):
+            is_sendMail = False
+            with open(dir_ + '/txtEmail.txt', 'r') as f2:
+                fromaddr = 'totalvirusnotify@gmail.com'
+                toaddrs = 'thaopt@peacesoft.net'
 
-result_function()
+                msg = MIMEText(f2.read())
+                msg['Subject'] = 'VIRUS notify'
+                msg['From'] = 'totalvirusnotify@gmail.com'
+                msg['To'] = 'thaopt@peacesoft.net'
+
+                username = 'totalvirusnotify@gmail.com'
+                password = 'XBCsCKFaRciDww94E'
+
+                server = smtplib.SMTP('smtp.gmail.com:587')
+                server.starttls()
+                server.login(username, password)
+                server.sendmail(fromaddr, toaddrs, msg.as_string())
+                server.quit()
+
+#result_function()
+
