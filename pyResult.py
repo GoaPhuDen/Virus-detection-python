@@ -27,7 +27,7 @@ def result_function():
             dict = ast.literal_eval(sha1key)
             for key_file, key_value in dict.items():
                 parameters = {"resource": key_value,
-                              "apikey": "d31a91ec0297564515ccfb4b8d9a8bf749a3330fcbe19dab7b7b14f0a9d42108"}
+                              "apikey": "YOUR API KEY"}
                 data = urllib.parse.urlencode(parameters)
                 binary_data = data.encode('UTF-8')
                 req = urllib.request.Request(url, binary_data)
